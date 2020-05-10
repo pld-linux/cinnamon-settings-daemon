@@ -9,6 +9,7 @@ License:	GPL v2+
 Group:		Applications
 #Source0Download: https://github.com/linuxmint/cinnamon-settings-daemon/releases
 Source0:	https://github.com/linuxmint/cinnamon-settings-daemon/archive/%{version}/%{name}-%{version}.tar.gz
+# Source0-md5:	51060a85e4922588f8ba5e120e79fcd2
 # https://github.com/linuxmint/cinnamon-settings-daemon/commit/4c19a41429524a2da202b919a335a646103da0fd.patch
 Patch0:		%{name}-restore_old_logind_check.patch
 URL:		https://github.com/linuxmint/cinnamon-settings-daemon
