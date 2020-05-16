@@ -1,17 +1,18 @@
-%define	cinnamon_desktop_ver	4.4.0
+%define	cinnamon_desktop_ver	4.6.0
 
 Summary:	Collection of Cinnamon settings plugins
 Summary(pl.UTF-8):	Zbiór wtyczek do ustawień środowiska Cinnamon
 Name:		cinnamon-settings-daemon
-Version:	4.4.0
+Version:	4.6.0
 Release:	1
 License:	GPL v2+
 Group:		Applications
 #Source0Download: https://github.com/linuxmint/cinnamon-settings-daemon/releases
 Source0:	https://github.com/linuxmint/cinnamon-settings-daemon/archive/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	51060a85e4922588f8ba5e120e79fcd2
-# https://github.com/linuxmint/cinnamon-settings-daemon/commit/4c19a41429524a2da202b919a335a646103da0fd.patch
-Patch0:		%{name}-restore_old_logind_check.patch
+# Source0-md5:	9b89da1d98f57f55d264ebb3d205b88d
+#Source1Download: https://github.com/linuxmint/cinnamon-translations/releases
+Source1:	https://github.com/linuxmint/cinnamon-translations/archive/%{version}/cinnamon-translations-%{version}.tar.gz
+# Source1-md5:	2a7f336ad50c2ec8ec4e80a7acf5f899
 URL:		https://github.com/linuxmint/cinnamon-settings-daemon
 BuildRequires:	autoconf >= 2.60
 BuildRequires:	automake >= 1:1.9
@@ -20,7 +21,6 @@ BuildRequires:	colord-devel >= 0.1.27
 BuildRequires:	cups-devel >= 1.4
 BuildRequires:	dbus-devel >= 1.1.2
 BuildRequires:	dbus-glib-devel
-#BuildRequires:	desktop-file-utils
 BuildRequires:	fontconfig-devel
 BuildRequires:	gettext-tools
 BuildRequires:	glib2-devel >= 1:2.38.0
@@ -96,8 +96,7 @@ Development files for Cinnamon settings daemon.
 Pliki programistyczne demona ustawień środowiska Cinnamon.
 
 %prep
-%setup -q
-%patch0 -p1
+%setup -q -a1
 
 %build
 install -d m4
@@ -114,6 +113,8 @@ install -d m4
 
 %{__make}
 
+%{__make} -C cinnamon-translations-%{version}
+
 %install
 rm -rf $RPM_BUILD_ROOT
 
@@ -125,13 +126,23 @@ rm -rf $RPM_BUILD_ROOT
 # example script, packaged as %doc
 %{__rm} $RPM_BUILD_ROOT%{_datadir}/cinnamon-settings-daemon-3.0/input-device-example.sh
 
+cd cinnamon-translations-%{version}
+for f in usr/share/locale/*/LC_MESSAGES/%{name}.mo ; do
+	install -D "$f" "$RPM_BUILD_ROOT/$f"
+done
+cd ..
+
+# not supported by glibc
+%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/ie
+
+%find_lang %{name}
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%files
+%files -f %{name}.lang
 %defattr(644,root,root,755)
 %doc AUTHORS MAINTAINERS README.rst plugins/common/input-device-example.sh
-%dir %{_libdir}/cinnamon-settings-daemon-3.0/
 %attr(755,root,root) %{_libexecdir}/csd-a11y-keyboard
 %attr(755,root,root) %{_libexecdir}/csd-a11y-settings
 %attr(755,root,root) %{_libexecdir}/csd-automount
@@ -163,8 +174,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libexecdir}/csd-wacom-led-helper
 %attr(755,root,root) %{_libexecdir}/csd-wacom-osd
 %endif
+%dir %{_libdir}/cinnamon-settings-daemon-3.0
 %attr(755,root,root) %{_libdir}/cinnamon-settings-daemon-3.0/libcsd.so
-%config /etc/dbus-1/system.d/org.cinnamon.SettingsDaemon.DateTimeMechanism.conf
 %{_sysconfdir}/xdg/autostart/cinnamon-settings-daemon-a11y-keyboard.desktop
 %{_sysconfdir}/xdg/autostart/cinnamon-settings-daemon-a11y-settings.desktop
 %{_sysconfdir}/xdg/autostart/cinnamon-settings-daemon-automount.desktop
@@ -187,6 +198,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/xdg/autostart/cinnamon-settings-daemon-xsettings.desktop
 %{_datadir}/cinnamon-settings-daemon
 %{_datadir}/dbus-1/system-services/org.cinnamon.SettingsDaemon.DateTimeMechanism.service
+%{_datadir}/dbus-1/system.d/org.cinnamon.SettingsDaemon.DateTimeMechanism.conf
 %{_datadir}/glib-2.0/schemas/org.cinnamon.settings-daemon.enums.xml
 %{_datadir}/glib-2.0/schemas/org.cinnamon.settings-daemon.*.gschema.xml
 %{_datadir}/polkit-1/actions/org.cinnamon.settings*.policy
