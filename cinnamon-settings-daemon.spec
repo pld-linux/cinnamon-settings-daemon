@@ -1,19 +1,19 @@
-%define	translations_version	4.8.3
+%define	translations_version	5.0.2
 %define	cinnamon_desktop_ver	4.8.0
 
 Summary:	Collection of Cinnamon settings plugins
 Summary(pl.UTF-8):	Zbiór wtyczek do ustawień środowiska Cinnamon
 Name:		cinnamon-settings-daemon
-Version:	4.8.5
-Release:	3
+Version:	5.0.3
+Release:	1
 License:	GPL v2+
 Group:		Applications
 #Source0Download: https://github.com/linuxmint/cinnamon-settings-daemon/releases
 Source0:	https://github.com/linuxmint/cinnamon-settings-daemon/archive/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	72ff88cc555586a2db1c24989e9d60b2
+# Source0-md5:	4a9ef25efa55e45f464dbe3a9dd0d4ec
 #Source1Download: https://github.com/linuxmint/cinnamon-translations/releases
 Source1:	https://github.com/linuxmint/cinnamon-translations/archive/%{translations_version}/cinnamon-translations-%{translations_version}.tar.gz
-# Source1-md5:	a68529f0f1a6c7f8b693a81095bece96
+# Source1-md5:	6e40b7f545138907148af3377e628d63
 URL:		https://github.com/linuxmint/cinnamon-settings-daemon
 BuildRequires:	cinnamon-desktop-devel >= %{cinnamon_desktop_ver}
 BuildRequires:	colord-devel >= 0.1.27
