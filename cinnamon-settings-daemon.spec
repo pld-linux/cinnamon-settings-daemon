@@ -1,21 +1,20 @@
-%define	cinnamon_desktop_ver	4.6.0
+%define	translations_version	4.8.3
+%define	cinnamon_desktop_ver	4.8.0
 
 Summary:	Collection of Cinnamon settings plugins
 Summary(pl.UTF-8):	Zbiór wtyczek do ustawień środowiska Cinnamon
 Name:		cinnamon-settings-daemon
-Version:	4.6.0
+Version:	4.8.5
 Release:	1
 License:	GPL v2+
 Group:		Applications
 #Source0Download: https://github.com/linuxmint/cinnamon-settings-daemon/releases
 Source0:	https://github.com/linuxmint/cinnamon-settings-daemon/archive/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	9b89da1d98f57f55d264ebb3d205b88d
+# Source0-md5:	72ff88cc555586a2db1c24989e9d60b2
 #Source1Download: https://github.com/linuxmint/cinnamon-translations/releases
-Source1:	https://github.com/linuxmint/cinnamon-translations/archive/%{version}/cinnamon-translations-%{version}.tar.gz
-# Source1-md5:	2a7f336ad50c2ec8ec4e80a7acf5f899
+Source1:	https://github.com/linuxmint/cinnamon-translations/archive/%{translations_version}/cinnamon-translations-%{translations_version}.tar.gz
+# Source1-md5:	a68529f0f1a6c7f8b693a81095bece96
 URL:		https://github.com/linuxmint/cinnamon-settings-daemon
-BuildRequires:	autoconf >= 2.60
-BuildRequires:	automake >= 1:1.9
 BuildRequires:	cinnamon-desktop-devel >= %{cinnamon_desktop_ver}
 BuildRequires:	colord-devel >= 0.1.27
 BuildRequires:	cups-devel >= 1.4
@@ -23,26 +22,28 @@ BuildRequires:	dbus-devel >= 1.1.2
 BuildRequires:	dbus-glib-devel
 BuildRequires:	fontconfig-devel
 BuildRequires:	gettext-tools
-BuildRequires:	glib2-devel >= 1:2.38.0
-BuildRequires:	gtk+3-devel >= 3.9.10
-BuildRequires:	intltool >= 0.37.1
+BuildRequires:	glib2-devel >= 1:2.40.0
+BuildRequires:	gtk+3-devel >= 3.14.0
 BuildRequires:	lcms2-devel >= 2.2
 BuildRequires:	libcanberra-gtk3-devel
 BuildRequires:	libgnomekbd-devel >= 3.6.0
 BuildRequires:	libnma-devel
 BuildRequires:	libnotify-devel >= 0.7.3
 BuildRequires:	librsvg-devel >= 2.36.2
-BuildRequires:	libtool
 BuildRequires:	libxklavier-devel >= 5.0
 BuildRequires:	libxslt
+BuildRequires:	meson >= 0.47
+BuildRequires:	ninja >= 1.5
 BuildRequires:	nss-devel >= 3.11.2
 BuildRequires:	pkgconfig
 BuildRequires:	polkit-devel >= 0.97
 BuildRequires:	pulseaudio-devel >= 0.9.16
+BuildRequires:	rpmbuild(macros) >= 1.736
 BuildRequires:	systemd-devel >= 1:209
 BuildRequires:	udev-glib-devel
 BuildRequires:	upower-devel >= 0.9.11
 BuildRequires:	xorg-lib-libX11-devel
+BuildRequires:	xorg-lib-libXext-devel
 BuildRequires:	xorg-lib-libXfixes-devel
 BuildRequires:	xorg-lib-libXi-devel
 BuildRequires:	xorg-lib-libXtst-devel
@@ -56,8 +57,8 @@ Requires:	cinnamon-desktop >= %{cinnamon_desktop_ver}
 Requires:	colord >= 0.1.27
 Requires:	cups-lib >= 1.4
 Requires:	dbus >= 1.1.2
-Requires:	glib2 >= 1:2.38.0
-Requires:	gtk+3 >= 3.9.10
+Requires:	glib2 >= 1:2.40.0
+Requires:	gtk+3 >= 3.14.0
 Requires:	ibus
 Requires:	iio-sensor-proxy
 Requires:	lcms2 >= 2.2
@@ -99,34 +100,22 @@ Pliki programistyczne demona ustawień środowiska Cinnamon.
 %setup -q -a1
 
 %build
-install -d m4
-%{__glib_gettextize}
-%{__intltoolize}
-%{__libtoolize}
-%{__aclocal} -I m4
-%{__autoconf}
-%{__autoheader}
-%{__automake}
-%configure \
-	--disable-silent-rules \
-	--disable-static
+%meson build \
+	--default-library=shared
 
-%{__make}
+%ninja_build -C build
 
-%{__make} -C cinnamon-translations-%{version}
+%{__make} -C cinnamon-translations-%{translations_version}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%{__make} install \
-	DESTDIR=$RPM_BUILD_ROOT
-
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/cinnamon-settings-daemon-3.0/libcsd.la
+%ninja_install -C build
 
 # example script, packaged as %doc
 %{__rm} $RPM_BUILD_ROOT%{_datadir}/cinnamon-settings-daemon-3.0/input-device-example.sh
 
-cd cinnamon-translations-%{version}
+cd cinnamon-translations-%{translations_version}
 for f in usr/share/locale/*/LC_MESSAGES/%{name}.mo ; do
 	install -D "$f" "$RPM_BUILD_ROOT/$f"
 done
@@ -142,7 +131,37 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
-%doc AUTHORS MAINTAINERS README.rst plugins/common/input-device-example.sh
+%doc AUTHORS README.rst debian/changelog plugins/common/input-device-example.sh
+%attr(755,root,root) %{_bindir}/csd-a11y-keyboard
+%attr(755,root,root) %{_bindir}/csd-a11y-settings
+%attr(755,root,root) %{_bindir}/csd-automount
+%attr(755,root,root) %{_bindir}/csd-background
+%attr(755,root,root) %{_bindir}/csd-backlight-helper
+%attr(755,root,root) %{_bindir}/csd-clipboard
+%attr(755,root,root) %{_bindir}/csd-color
+%attr(755,root,root) %{_bindir}/csd-cursor
+%attr(755,root,root) %{_bindir}/csd-datetime-mechanism
+%attr(755,root,root) %{_bindir}/csd-housekeeping
+%attr(755,root,root) %{_bindir}/csd-input-helper
+%attr(755,root,root) %{_bindir}/csd-keyboard
+%attr(755,root,root) %{_bindir}/csd-locate-pointer
+%attr(755,root,root) %{_bindir}/csd-media-keys
+%attr(755,root,root) %{_bindir}/csd-mouse
+%attr(755,root,root) %{_bindir}/csd-orientation
+%attr(755,root,root) %{_bindir}/csd-power
+%attr(755,root,root) %{_bindir}/csd-printer
+%attr(755,root,root) %{_bindir}/csd-print-notifications
+%attr(755,root,root) %{_bindir}/csd-screensaver-proxy
+%attr(755,root,root) %{_bindir}/csd-smartcard
+%attr(755,root,root) %{_bindir}/csd-sound
+%attr(755,root,root) %{_bindir}/csd-xrandr
+%attr(755,root,root) %{_bindir}/csd-xsettings
+%ifnarch s390 s390x
+%attr(755,root,root) %{_bindir}/csd-list-wacom
+%attr(755,root,root) %{_bindir}/csd-wacom
+%attr(755,root,root) %{_bindir}/csd-wacom-led-helper
+%attr(755,root,root) %{_bindir}/csd-wacom-osd
+%endif
 %attr(755,root,root) %{_libexecdir}/csd-a11y-keyboard
 %attr(755,root,root) %{_libexecdir}/csd-a11y-settings
 %attr(755,root,root) %{_libexecdir}/csd-automount
@@ -152,7 +171,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libexecdir}/csd-color
 %attr(755,root,root) %{_libexecdir}/csd-cursor
 %attr(755,root,root) %{_libexecdir}/csd-datetime-mechanism
-%attr(755,root,root) %{_libexecdir}/csd-dummy
 %attr(755,root,root) %{_libexecdir}/csd-housekeeping
 %attr(755,root,root) %{_libexecdir}/csd-input-helper
 %attr(755,root,root) %{_libexecdir}/csd-keyboard
@@ -174,6 +192,38 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libexecdir}/csd-wacom-led-helper
 %attr(755,root,root) %{_libexecdir}/csd-wacom-osd
 %endif
+%dir %{_libdir}/cinnamon-settings-daemon
+%attr(755,root,root) %{_libdir}/cinnamon-settings-daemon/csd-a11y-keyboard
+%attr(755,root,root) %{_libdir}/cinnamon-settings-daemon/csd-a11y-settings
+%attr(755,root,root) %{_libdir}/cinnamon-settings-daemon/csd-automount
+%attr(755,root,root) %{_libdir}/cinnamon-settings-daemon/csd-background
+%attr(755,root,root) %{_libdir}/cinnamon-settings-daemon/csd-backlight-helper
+%attr(755,root,root) %{_libdir}/cinnamon-settings-daemon/csd-clipboard
+%attr(755,root,root) %{_libdir}/cinnamon-settings-daemon/csd-color
+%attr(755,root,root) %{_libdir}/cinnamon-settings-daemon/csd-cursor
+%attr(755,root,root) %{_libdir}/cinnamon-settings-daemon/csd-datetime-mechanism
+%attr(755,root,root) %{_libdir}/cinnamon-settings-daemon/csd-housekeeping
+%attr(755,root,root) %{_libdir}/cinnamon-settings-daemon/csd-input-helper
+%attr(755,root,root) %{_libdir}/cinnamon-settings-daemon/csd-keyboard
+%attr(755,root,root) %{_libdir}/cinnamon-settings-daemon/csd-locate-pointer
+%attr(755,root,root) %{_libdir}/cinnamon-settings-daemon/csd-media-keys
+%attr(755,root,root) %{_libdir}/cinnamon-settings-daemon/csd-mouse
+%attr(755,root,root) %{_libdir}/cinnamon-settings-daemon/csd-orientation
+%attr(755,root,root) %{_libdir}/cinnamon-settings-daemon/csd-power
+%attr(755,root,root) %{_libdir}/cinnamon-settings-daemon/csd-printer
+%attr(755,root,root) %{_libdir}/cinnamon-settings-daemon/csd-print-notifications
+%attr(755,root,root) %{_libdir}/cinnamon-settings-daemon/csd-screensaver-proxy
+%attr(755,root,root) %{_libdir}/cinnamon-settings-daemon/csd-smartcard
+%attr(755,root,root) %{_libdir}/cinnamon-settings-daemon/csd-sound
+%attr(755,root,root) %{_libdir}/cinnamon-settings-daemon/csd-xrandr
+%attr(755,root,root) %{_libdir}/cinnamon-settings-daemon/csd-xsettings
+%ifnarch s390 s390x
+%attr(755,root,root) %{_libdir}/cinnamon-settings-daemon/csd-list-wacom
+%attr(755,root,root) %{_libdir}/cinnamon-settings-daemon/csd-wacom
+%attr(755,root,root) %{_libdir}/cinnamon-settings-daemon/csd-wacom-led-helper
+%attr(755,root,root) %{_libdir}/cinnamon-settings-daemon/csd-wacom-osd
+%endif
+
 %dir %{_libdir}/cinnamon-settings-daemon-3.0
 %attr(755,root,root) %{_libdir}/cinnamon-settings-daemon-3.0/libcsd.so
 %{_sysconfdir}/xdg/autostart/cinnamon-settings-daemon-a11y-keyboard.desktop
