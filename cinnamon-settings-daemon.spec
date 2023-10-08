@@ -5,7 +5,7 @@ Summary:	Collection of Cinnamon settings plugins
 Summary(pl.UTF-8):	Zbiór wtyczek do ustawień środowiska Cinnamon
 Name:		cinnamon-settings-daemon
 Version:	5.8.1
-Release:	2
+Release:	3
 License:	GPL v2+
 Group:		Applications
 #Source0Download: https://github.com/linuxmint/cinnamon-settings-daemon/tags
@@ -123,7 +123,7 @@ done
 cd ..
 
 # not supported by glibc
-%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/{ie,zgh}
+%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/{ie,rue,zgh}
 
 %find_lang %{name}
 
