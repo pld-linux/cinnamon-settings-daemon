@@ -1,19 +1,19 @@
-%define	translations_version	5.8.2
+%define	translations_version	6.0.2
 %define	cinnamon_desktop_ver	4.8.0
 
 Summary:	Collection of Cinnamon settings plugins
 Summary(pl.UTF-8):	Zbiór wtyczek do ustawień środowiska Cinnamon
 Name:		cinnamon-settings-daemon
-Version:	5.8.1
-Release:	3
+Version:	6.0.0
+Release:	1
 License:	GPL v2+
 Group:		Applications
 #Source0Download: https://github.com/linuxmint/cinnamon-settings-daemon/tags
 Source0:	https://github.com/linuxmint/cinnamon-settings-daemon/archive/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	bb03d40c4c83297c3dcfe563ebdf9bd5
+# Source0-md5:	2196db65d92eb9a768942c4491a8e292
 #Source1Download: https://github.com/linuxmint/cinnamon-translations/tags
 Source1:	https://github.com/linuxmint/cinnamon-translations/archive/%{translations_version}/cinnamon-translations-%{translations_version}.tar.gz
-# Source1-md5:	ec085ca8784b03b74d5769a9d3bcd031
+# Source1-md5:	36552df46587be4e32ac311b8d7084e4
 URL:		https://github.com/linuxmint/cinnamon-settings-daemon
 BuildRequires:	cinnamon-desktop-devel >= %{cinnamon_desktop_ver}
 BuildRequires:	colord-devel >= 0.1.27
@@ -31,7 +31,7 @@ BuildRequires:	libnotify-devel >= 0.7.3
 BuildRequires:	librsvg-devel >= 2.36.2
 BuildRequires:	libxklavier-devel >= 5.0
 BuildRequires:	libxslt-progs
-BuildRequires:	meson >= 0.47
+BuildRequires:	meson >= 0.56.0
 BuildRequires:	ninja >= 1.5
 BuildRequires:	nss-devel >= 3.11.2
 BuildRequires:	pango-devel >= 1:1.20.0
@@ -148,6 +148,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/csd-print-notifications
 %attr(755,root,root) %{_bindir}/csd-printer
 %attr(755,root,root) %{_bindir}/csd-screensaver-proxy
+%attr(755,root,root) %{_bindir}/csd-settings-remap
 %attr(755,root,root) %{_bindir}/csd-smartcard
 %attr(755,root,root) %{_bindir}/csd-xsettings
 %ifnarch s390 s390x
@@ -168,6 +169,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libexecdir}/csd-print-notifications
 %attr(755,root,root) %{_libexecdir}/csd-printer
 %attr(755,root,root) %{_libexecdir}/csd-screensaver-proxy
+%attr(755,root,root) %{_libexecdir}/csd-settings-remap
 %attr(755,root,root) %{_libexecdir}/csd-smartcard
 %attr(755,root,root) %{_libexecdir}/csd-xsettings
 %ifnarch s390 s390x
@@ -191,6 +193,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/cinnamon-settings-daemon/csd-print-notifications
 %attr(755,root,root) %{_libdir}/cinnamon-settings-daemon/csd-printer
 %attr(755,root,root) %{_libdir}/cinnamon-settings-daemon/csd-screensaver-proxy
+%attr(755,root,root) %{_libdir}/cinnamon-settings-daemon/csd-settings-remap
 %attr(755,root,root) %{_libdir}/cinnamon-settings-daemon/csd-smartcard
 %attr(755,root,root) %{_libdir}/cinnamon-settings-daemon/csd-xsettings
 %ifnarch s390 s390x
@@ -210,6 +213,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/xdg/autostart/cinnamon-settings-daemon-power.desktop
 %{_sysconfdir}/xdg/autostart/cinnamon-settings-daemon-print-notifications.desktop
 %{_sysconfdir}/xdg/autostart/cinnamon-settings-daemon-screensaver-proxy.desktop
+%{_sysconfdir}/xdg/autostart/cinnamon-settings-daemon-settings-remap.desktop
 %{_sysconfdir}/xdg/autostart/cinnamon-settings-daemon-smartcard.desktop
 %{_sysconfdir}/xdg/autostart/cinnamon-settings-daemon-wacom.desktop
 %{_sysconfdir}/xdg/autostart/cinnamon-settings-daemon-xsettings.desktop
