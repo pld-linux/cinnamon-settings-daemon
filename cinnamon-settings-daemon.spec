@@ -1,19 +1,19 @@
-%define	translations_version	6.4.1
+%define	translations_version	6.4.2
 %define	cinnamon_desktop_ver	4.8.0
 
 Summary:	Collection of Cinnamon settings plugins
 Summary(pl.UTF-8):	Zbiór wtyczek do ustawień środowiska Cinnamon
 Name:		cinnamon-settings-daemon
-Version:	6.4.1
+Version:	6.4.3
 Release:	1
 License:	GPL v2+
 Group:		Applications
 #Source0Download: https://github.com/linuxmint/cinnamon-settings-daemon/tags
 Source0:	https://github.com/linuxmint/cinnamon-settings-daemon/archive/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	1eb2372670286b9359e5f7244892363f
+# Source0-md5:	2496aecb26e6b9a2daa6c467c31e7572
 #Source1Download: https://github.com/linuxmint/cinnamon-translations/tags
 Source1:	https://github.com/linuxmint/cinnamon-translations/archive/%{translations_version}/cinnamon-translations-%{translations_version}.tar.gz
-# Source1-md5:	2d12def6818b100664081e979343d214
+# Source1-md5:	2a92606a2dcdc696889f08edd12f6bb6
 URL:		https://github.com/linuxmint/cinnamon-settings-daemon
 BuildRequires:	cinnamon-desktop-devel >= %{cinnamon_desktop_ver}
 BuildRequires:	colord-devel >= 0.1.27
@@ -38,7 +38,7 @@ BuildRequires:	pango-devel >= 1:1.20.0
 BuildRequires:	pkgconfig
 BuildRequires:	polkit-devel >= 0.97
 BuildRequires:	pulseaudio-devel >= 0.9.16
-BuildRequires:	rpmbuild(macros) >= 1.736
+BuildRequires:	rpmbuild(macros) >= 2.042
 BuildRequires:	systemd-devel >= 1:209
 BuildRequires:	udev-glib-devel
 BuildRequires:	upower-devel >= 0.9.11
@@ -101,17 +101,17 @@ Pliki programistyczne demona ustawień środowiska Cinnamon.
 %setup -q -a1
 
 %build
-%meson build \
+%meson \
 	--default-library=shared
 
-%ninja_build -C build
+%meson_build
 
 %{__make} -C cinnamon-translations-%{translations_version}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%ninja_install -C build
+%meson_install
 
 # example script, packaged as %doc
 %{__rm} $RPM_BUILD_ROOT%{_datadir}/cinnamon-settings-daemon-3.0/input-device-example.sh
